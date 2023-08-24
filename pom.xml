@@ -97,7 +97,7 @@
 	    <repository>
 	      <id>Nexus</id>
 	      <name>Acada-RELEASE</name>
-	      <url>http://35.171.158.47:8081/nexus/content/repositories/Nexus/</url>
+	      <url>http://35.171.158.47:8081/nexus/content/repositories/Nexus</url>
 	    </repository>
 	    
 	    <snapshotRepository>
