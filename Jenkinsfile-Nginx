@@ -41,7 +41,7 @@ pipeline {
         }
         stage("Deploy To Kuberates Cluster"){
             steps{
-                sh 'kubectl apply -f webapp-class'
+                sh 'kubectl apply -f webapp-class.yaml'
                 
             }
         }
