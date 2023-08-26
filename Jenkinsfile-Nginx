@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+    tools{
+        maven 'maven3.8.6'
+    }
+    environment{     
+    DOCKERHUB_CREDENTIALS=credentials('dockerhubpwd')     
+}
+    stages{
+        stage('Build with Maven') {
+            steps{
+                echo 'Building with Maven'
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'Git_Cred', url: 'https://github.com/Bestedeki/web-app.git']])
+                sh 'mvn clean package'
+                echo 'Building done'
+            }
+        }
+        stage('Approval') {
+            steps{
+                echo 'Seeking approval'
+                timeout(time: 5, unit: "DAYS"){
+                input message: 'Approve to production'
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps{
+                echo 'Building Docker Image'
+                /*sh 'docker rm -f mywebapp'
+                sh 'docker rmi -f bestedeki/mywebapp'*/
+                sh 'docker build -t bestedeki/web-app .'
+                echo 'Docker image built'
+                
+            }
+        }
+        stage('Push Image to Dockerhub') {
+            steps{
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin' 
+                sh 'docker push bestedeki/web-app'
+            }
+        }
+        stage("Deploy To Kuberates Cluster"){
+            steps{
+                sh 'kubectl apply -f webapp-class'
+                
+            }
+        }
+     
+    }
+}
