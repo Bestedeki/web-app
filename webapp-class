@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: bestedeki/webapp
+        image: bestedeki/web-app
         ports:
         - containerPort: 80
 ---
